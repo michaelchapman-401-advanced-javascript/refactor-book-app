@@ -1,59 +1,23 @@
 'use strict';
 
-require('dotenv').config();
 
 // Application Dependencies
-const express = require('express');
 const pg = require('pg');
 const superagent = require('superagent');
-const methodOverride = require('method-override');
-
-// Application Setup
-const app = express();
-const PORT = process.env.PORT;
 
 // Database Setup
 const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
 client.on('error', err => console.error(err));
 
-// Application Middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
-
-app.use(methodOverride((request, response) => {
-  if (request.body && typeof request.body === 'object' && '_method' in request.body) {
-    // look in urlencoded POST bodies and delete it
-    let method = request.body._method;
-    delete request.body._method;
-    return method;
-  }
-}))
-
-// Set the view engine for server-side templating
-app.set('view engine', 'ejs');
-
-// API Routes
-app.get('/', getBooks);
-app.post('/searches', createSearch);
-app.get('/searches/new', newSearch);
-app.get('/books/:id', getBook);
-app.post('/books', createBook);
-app.put('/books/:id', updateBook);
-app.delete('/books/:id', deleteBook);
-
-app.get('*', (request, response) => response.status(404).send('This route does not exist'));
-
-app.listen(PORT, () => console.log(`Listening on port: ${PORT}`));
 
 // HELPER FUNCTIONS
 function Book(info) {
-  const placeholderImage = 'https://i.imgur.com/J5LVHEL.jpg';
-
+  const image = 'https://i.imgur.com/J5LVHEL.jpg';
   this.title = info.title ? info.title : 'No title available';
   this.author = info.authors ? info.authors[0] : 'No author available';
   this.isbn = info.industryIdentifiers ? `ISBN_13 ${info.industryIdentifiers[0].identifier}` : 'No ISBN available';
-  this.image_url = info.imageLinks ? info.imageLinks.smallThumbnail : placeholderImage;
+  this.image_url = info.imageLinks ? info.imageLinks.smallThumbnail : image;
   this.description = info.description ? info.description : 'No description available';
   this.id = info.industryIdentifiers ? `${info.industryIdentifiers[0].identifier}` : '';
 }
@@ -169,3 +133,5 @@ function deleteBook(request, response) {
 function handleError(error, response) {
   response.render('pages/error', { error: error });
 }
+
+module.exports = {getBooks, newSearch, createSearch, getBook, createBook, updateBook, deleteBook};

@@ -1,5 +1,5 @@
 <!-- Create bookshelves table -->
-CREATE TABLE BOOKSHELVES (id SERIAL PRIMARY KEY, name VARCHAR(255));
+CREATE TABLE bookshelves (id SERIAL PRIMARY KEY, name VARCHAR(255));
 
 <!-- Select distinct bookshelves from the books table and insert into the bookshelves table -->
 INSERT INTO bookshelves(name) SELECT DISTINCT bookshelf FROM books;
