@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "watch": "nodemon server.js",
+    "watch": "nodemon index.js",
     "lint": "eslint \"**/*.js\"",
     "jsdoc": "jsdoc -c ./docs/config/jsdoc.config.json .",
     "test": "jest --verbose",
